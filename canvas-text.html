@@ -4,6 +4,18 @@
     <meta charset="utf-8" />
     <title>Draw Text with Canvas</title>
 <script>
+
+var SEP_RE = /\s|[^\x00-\xff]/g;
+// 找出分割字符
+function findSep(s) {
+	for(var i = s.length - 1; i > 0; i--) {
+		if(SEP_RE.test(s[i])) {
+			return i + 1;
+		}
+	}
+	return 0;
+}
+
 function draw() {
 	var can1 = document.createElement("canvas");
 	inputText = document.getElementById('text');
@@ -30,7 +42,12 @@ function draw() {
     	}
     	var text_width = ctx1.measureText(s + c).width;
     	if(text_width > line_width) {
-    		// 画一行
+    		// 画一行, 判断断行位置
+    		var index = findSep(s);
+    		if(index !== 0) {
+    			c = s.substring(index) + c;
+    			s = s.substring(0, index)
+    		}
     		if(top + line_height > height) {
                 height += line_height;
             }
