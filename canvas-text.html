@@ -65,7 +65,7 @@ function draw() {
     	lines.push([s, left, top]);
     }
     can1.height = height;
-    ctx1.font = font_size + "px " + document.getElementById('font_family').value;
+    ctx1.font = document.getElementById('font_weight').value + ' ' + font_size + "px " + document.getElementById('font_family').value;
     // 需要在设置了高度后再设置textBaseline 才会生效
     ctx1.textBaseline = "top";
     
@@ -84,11 +84,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		font_family = font_family.substring(1, font_family.length - 1);
 	}
 	document.getElementById('font_family').value = font_family;
+	var font_size = window.getComputedStyle(document.getElementById('text')).getPropertyValue('font-size');
+	document.getElementById('font_size').value = parseInt(font_size);
+	
+	// change event handler
 	document.getElementById('font_family').addEventListener('change', function() {
 		document.getElementById('text').style.setProperty('font-family', this.value);
 	});
 	document.getElementById('font_size').addEventListener('change', function() {
         document.getElementById('text').style.setProperty('font-size', this.value + 'px');
+    });
+	document.getElementById('font_weight').addEventListener('change', function() {
+        document.getElementById('text').style.setProperty('font-weight', this.value);
     });
 }, false);
 
@@ -101,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <label for="font_size">Font Size:</label>
     <select id="font_size">
         <option>11</option>
-        <option selected="selected">12</option>
+        <option>12</option>
         <option>13</option>
         <option>14</option>
         <option>15</option>
@@ -121,6 +128,12 @@ document.addEventListener('DOMContentLoaded', function() {
         <option>29</option>
         <option>30</option>
     </select>px
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <label>Weight:</label>
+    <select id="font_weight">
+        <option>normal</option>
+        <option>bold</option>
+    </select>
     &nbsp;&nbsp;&nbsp;&nbsp;
     <label>Family:</label>
     <select id="font_family">
