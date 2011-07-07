@@ -67,8 +67,8 @@ function draw() {
     	lines.push([s, left, top]);
     }
     can1.height = height;
-    ctx1.font = font;
     // 需要在设置了高度后再设置textBaseline 才会生效
+    ctx1.font = font;
     ctx1.textBaseline = "top";
     
     for(var i = 0, len = lines.length; i < len; i++) {
@@ -131,13 +131,13 @@ document.addEventListener('DOMContentLoaded', function() {
         <option>30</option>
     </select>px
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <label>Weight:</label>
+    <label for="font_weight">Weight:</label>
     <select id="font_weight">
         <option>normal</option>
         <option>bold</option>
     </select>
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <label>Family:</label>
+    <label for="font_family">Family:</label>
     <select id="font_family">
         <option>cursive</option>
         <option>monospace</option>
