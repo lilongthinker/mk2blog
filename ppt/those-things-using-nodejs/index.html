@@ -58,16 +58,12 @@
     <h2>二三事</h2>
     <ol>
         <li>
-            <h3>Nodejs HTTP请求的超时处理 (HTTP Request Timeout Handle)</h3>
+            <h3>HTTP请求的超时处理 (HTTP Request Timeout Handle)</h3>
             <p>Nodejs不支持设置超时参数？怎样增加超时处理呢？为什么要处理这些呢？</p>
         </li>
         <li>
             <h3>Stream & 读写大文件</h3>
             <p>Stream是干什么的？V8有1G堆栈内存限制，那么Nodejs该如何读写大文件？</p>
-        </li>
-        <li>
-            <h3>Node0.5.x新增的进程通信方式</h3>
-            <p>Node是单进程的，只能使用一个CPU，谁说的？</p>
         </li>
         <li>
             <h3>串、并行的异步调用</h3>
@@ -77,24 +73,36 @@
 </div>
 
 <div class="slide">
-    <h2>Nodejs HTTP请求的超时处理</h2>
+    <h1>HTTP请求的超时处理</h1>
+</div>
+
+<div class="slide">
+    <h2>基本HTTP请求</h2>
     <p>Nodejs中请求一个HTTP URL非常方便：<code><a href="http://nodejs.org/docs/v0.5.5/api/http.html#http.request" target="_blank">http.request</a></code>，
     封装url get方法：
     </p>
-    <pre style="font-size: 15px;"><code>var http = require('http')
+    <pre style="font-size: 26px;"><code>var http = require('http')
   , parse = require('url').parse;
 function urlget(url, callback) {
     var info = parse(url)
       , path = info.pathname + (info.search || '')
-      , options = { host: info.hostname, port: info.port || 80, path: path, method: 'GET' };
+      , options = { host: info.hostname, 
+            port: info.port || 80, 
+            path: path, 
+            method: 'GET' };
     var req = http.request(options, function(res) {
+    </code></pre>
+</div>
+
+<div class="slide">
+    <pre style="font-size: 24px;"><code>    var req = http.request(options, function(res) {
         var chunks = [], length = 0;
         res.on('data', function(chunk) {
             length += chunk.length;
             chunks.push(chunk);
         }).on('end', function() {
-            var data = new Buffer(length);
-            for(var i = 0, pos = 0, l = chunks.length; i &lt; l; i++) {
+            var data = new Buffer(length), pos = 0;
+            for(var i = 0, l = chunks.length; i &lt; l; i++) {
                 chunks[i].copy(data, pos);
                 pos += chunks[i].length;
             }
@@ -113,36 +121,46 @@ function urlget(url, callback) {
 <div class="slide">
     <h2>请求正常的URL</h2>
     <p>一般来说，urlget都能很好地按我们想象的方式正常工作：</p>
-    <pre style="font-size: 15px;"><code>var good_url = 'http://www.google.com/';
+    <pre style="font-size: 26px;"><code>var good_url = 'http://www.google.com/';
 urlget(good_url, function(err, res) {
     console.log('\nGET', good_url);
     if(err) {
-        console.log('error:', err, '\nResponse:\n', res ? res.headers : null);
+        console.log('error:', err, '\nResponse:\n', 
+            res ? res.headers : null);
     } else {
-        console.log('Headers:\n', res.headers, '\nBody:\n', res.body.toString());
+        console.log('Headers:\n', res.headers, 
+            '\nBody:\n', res.body.toString());
     }
 });
     </code></pre>
-    <div class="slide" id="">
+</div>
+
+<div class="slide">
     <h2>如果请求的URL响应时间很长呢？</h2>
     <p>例如一些被墙的服务，一些耗时不稳定的服务。即使是你自己的服务，也会有不稳定的时候。</p>
-    <pre style="font-size: 15px;"><code>var timeout_url = 'http://t.co/';
+    <pre style="font-size: 26px;"><code>var timeout_url = <code style="color:yellow;">'http://t.co/'</code>;
 urlget(timeout_url, function(err, res) {
     console.log('\nGET', timeout_url);
-    console.log(arguments);
+    if(err) {
+        console.log('error:', err, '\nResponse:\n', 
+            res ? res.headers : null);
+    } else {
+        console.log('Headers:\n', res.headers, 
+            '\nBody:\n', res.body.toString());
+    }
 });</code></pre>
-    </div>
+    <h2>t.co, bit.ly 感谢GFW</h2>
 </div>
 
 <div class="slide">
     <h2>Request Timeout: 75秒后超时了</h2>
     <p>等不及了，请求连接超时(Request timeout)异常触发，这是我本机之前的测试结果：</p>
-    <pre style="font-size: 18px;"><code>GET http://t.co/
+    <pre style="font-size: 20px;"><code>GET http://t.co/
 75584
 error: { stack: [Getter/Setter],
   arguments: undefined,
   type: undefined,
-  message: 'ETIMEDOUT, Operation timed out',
+  message: <code style="color:yellow;">'ETIMEDOUT, Operation timed out</code>',
   errno: 60,
   code: 'ETIMEDOUT',
   syscall: 'connect' } 
@@ -168,7 +186,7 @@ Response:
     <p>没错，就是<a href="http://nodejs.org/docs/v0.5.5/api/timers.html#setTimeout" target="_blank">setTimeout</a>，
     它一直都在：
     </p>
-    <pre style="font-size: 18px;"><code>var req = null, request_timeout = null;
+    <pre style="font-size: 22px;"><code>var req = null, request_timeout = null;
 request_timeout = setTimeout(function() {
     request_timeout = null;
     // 终止请求
@@ -180,14 +198,10 @@ request_timeout = setTimeout(function() {
     <h3>增加请求超时后，urlget完整代码会是怎样的呢？</h3>
 </div>
 <div class="slide">
-    <pre style="font-size: 15px;"><code>var http = require('http')
-  , parse = require('url').parse;
-function urlget(url, callback) {
-    var info = parse(url)
-      , path = info.pathname + (info.search || '')
-      , options = { host: info.hostname, port: info.port || 80, path: path, method: 'GET' };
-    var req = null, request_timeout = null;
-    <code style="color:yellow;">request_timeout = setTimeout(function() {
+    <pre style="font-size: 22px;"><code>function urlget(url, callback) {
+    // ... 此处忽略相同部分的代码 ...
+    var req = null, <code style="color:yellow;">request_timeout = null;
+    request_timeout = setTimeout(function() {
         request_timeout = null; 
         req.abort();
         callback(new Error('Request timeout'));
@@ -195,22 +209,10 @@ function urlget(url, callback) {
     req = http.request(options, function(res) {
         <code style="color:yellow;">clearTimeout(request_timeout);</code>
         var chunks = [], length = 0;
-        res.on('data', function(chunk) {
-            length += chunk.length;
-            chunks.push(chunk);
-        }).on('end', function() {
-            var data = new Buffer(length);
-            for(var i = 0, pos = 0, l = chunks.length; i &lt; l; i++) {
-                chunks[i].copy(data, pos);
-                pos += chunks[i].length;
-            }
-            res.body = data;
-            callback(null, res);
-        }).on('error', function(err) {
-            callback(err, res);
-        });
+        // ... 此处忽略相同部分的代码 ...
     }).on('error', function(err) {
-        <code style="color:red;">// node0.5.x及以上，调用req.abort()会触发一次“socket hang up” error
+        <code style="color:red;">// node0.5.x及以上，
+        // 调用req.abort()会触发一次“socket hang up” error
         // 所以需要判断是否超时，如果是超时，则无需再回调异常结果</code>
         <code style="color:yellow;">if(request_timeout) {
             clearTimeout(request_timeout);
@@ -223,7 +225,7 @@ function urlget(url, callback) {
 <div class="slide">
     <h2>什么！？还有响应超时！</h2>
     <p>处理请求超时，还有的情况是响应返回时间过长的问题，先看看模拟响应时间过长的服务器端代码：</p>
-    <pre style="font-size: 15px;"><code>var http = require('http')
+    <pre style="font-size: 24px;"><code>var http = require('http')
   , parse = require('url').parse;
 http.createServer(function(req, res) {
     var info = parse(req.url, true);
@@ -236,23 +238,25 @@ http.createServer(function(req, res) {
     }, s * 1000);
 }).listen(1984);
 console.log('Server start at http://localhost:1984/');</code></pre>
-    <div class="slide">
+</div>
+<div class="slide">
+    <h2>响应超时了！</h2>
     <p>从代码中可以看到，一个请求过来，会马上响应第一批数据，
     接着在参数指定的时间后响应剩余的数据。对于这种情况，我们仅仅有请求超时还是不够的：</p>
-    <pre style="font-size: 15px;"><code>var response_timeout_url = 'http://localhost:1984/foo?s=10';
+    <pre style="font-size: 24px;"><code>var response_timeout_url = 'http://localhost:1984/foo?s=10';
 urlget(response_timeout_url, function(err, res) {
     console.log('\nGET', response_timeout_url);
     if(err) {
         console.log('error:', util.inspect(err, true), 
             '\nResponse:\n', res ? res.headers : null);
     } else {
-        console.log('Headers:\n', res.headers, '\nBody:\n', res.body.toString());
+        console.log('Headers:\n', res.headers, 
+            '\nBody:\n', res.body.toString());
     }
 }); </code></pre>
-    </div>
 </div>
 <div class="slide">
-    <pre style="font-size: 15px;"><code>function urlget(url, callback) {
+    <pre style="font-size: 18px;"><code>function urlget(url, callback) {
     // ... 此处忽略相同部分的代码 ...
     req = http.request(options, function(res) {
         clearTimeout(request_timeout);
@@ -270,27 +274,19 @@ urlget(response_timeout_url, function(err, res) {
                 // node0.5.x及以上：req.abort()会触发res的end事件
                 clearTimeout(response_timeout);</code>
                 var data = new Buffer(length);
-                for(var i = 0, pos = 0, l = chunks.length; i &lt; l; i++) {
-                    chunks[i].copy(data, pos);
-                    pos += chunks[i].length;
-                }
-                res.body = data;
-                callback(null, res);
+                // ... 此处忽略相同部分的代码 ...
             <code style="color:yellow;">}</code>
         }).on('error', function(err) {
-            clearTimeout(response_timeout);
-            callback(err, res);
+            // ... 此处忽略相同部分的代码 ...
         })<code style="color:yellow;">.on('aborted', function() {
             if(response_timeout) {
-                // node0.5.x及以上：当res有效的时候，req.abort()会触发res的aborted事件
+                // node0.5.x及以上：
+                // 当res有效的时候，req.abort()会触发res的aborted事件
                 callback(new Error('Response aborted'), res);
             }
         })</code>;
     }).on('error', function(err) {
-        // ... 此处忽略相同部分的代码 ...
-    });
-    req.end();
-};  </code></pre>
+        // ... 此处忽略相同部分的代码 ...</code></pre>
 </div>
 <div class="slide">
     <h2>请求超时(Request Timeout)：</h2>
@@ -307,16 +303,17 @@ urlget(response_timeout_url, function(err, res) {
 </div>
 
 <div class="slide">
-    <h2>Stream & 读写大文件</h2>
+    <h1>Stream & 读写大文件</h1>
+</div>
+<div class="slide">
     <h2>Stream</h2>
-    <p>流(Stream)，流窜在Nodejs的各个角落。<a href="http://nodejs.org/docs/v0.5.5/api/streams.html" target="_blank">Stream</a>有3种：只读，只写，读写。</p>
-    <p>Stream继承了EventEmitter，正是Stream抽象出各种标准的事件，让文件流，网络流等有了标准的处理方式。</p>
-    <p>Stream可以说是Nodejs事件驱动编程绝好范例。</p>
-    <h2>读写大文件</h2>
-    <h3>内存限制</h3>
-    <p>由于V8 1G堆栈内存限制问题，不要直接使用<a href="http://nodejs.org/docs/v0.5.5/api/fs.html#fs.readFile" target="_blank">fs.readFile</a>和<a href="http://nodejs.org/docs/v0.5.5/api/fs.html#fs.writeFile" target="_blank">fs.writeFile</a>
-    进行大文件读写操作。</p> 
-    <p>必须使用Stream版本：<a href="http://nodejs.org/docs/v0.5.5/api/fs.html#fs.ReadStream" target="_blank">fs.ReadStream</a>和<a href="http://nodejs.org/docs/v0.5.5/api/fs.html#fs.WriteStream" target="_blank">fs.WriteStream</a>来对文件进行读写操作。</p>
+    <h3>流(Stream)，流窜在Nodejs的各个角落。<a href="http://nodejs.org/docs/v0.5.5/api/streams.html" target="_blank">Stream</a>有3种：只读，只写，读写。</h3>
+    <h3>Stream继承了EventEmitter，正是Stream抽象出各种标准的事件，让文件流，网络流等有了标准的处理方式。</h3>
+    <h3>Stream可以说是Nodejs事件驱动编程绝好范例。</h3>
+    <h2>读写大文件 & 内存限制</h2>
+    <h3>由于V8 1G堆栈内存限制问题，不要直接使用<a href="http://nodejs.org/docs/v0.5.5/api/fs.html#fs.readFile" target="_blank">fs.readFile</a>和<a href="http://nodejs.org/docs/v0.5.5/api/fs.html#fs.writeFile" target="_blank">fs.writeFile</a>
+    进行大文件读写操作。</h3>
+    <h3>必须使用Stream版本：<a href="http://nodejs.org/docs/v0.5.5/api/fs.html#fs.ReadStream" target="_blank">fs.ReadStream</a>和<a href="http://nodejs.org/docs/v0.5.5/api/fs.html#fs.WriteStream" target="_blank">fs.WriteStream</a>来对文件进行读写操作。</h3>
 </div>
 
 <div class="slide">
@@ -342,7 +339,7 @@ urlget(response_timeout_url, function(err, res) {
     
     <h3>直接使用pipe，想象两端水管，我们只需将他们按照水流方向连接起来即可（吐数据 ==> 收数据）
     当数据读取完，会自动触发req.end()</h3>
-    <pre><code>readstream.pipe(req);</code></pre>
+    <pre style="font-size: 24px;"><code>readstream.pipe(req);</code></pre>
     <h3>你没眼花，就是一行代码这么简单，所有数据就会自动发出去了。</h3>
     <h2>:) 呵呵，原来程序员也是水电工。</h2>
     <h2>完整示例代码</h2>
@@ -362,7 +359,6 @@ urlget(response_timeout_url, function(err, res) {
     <pre><code>writestream.on('close', function() {
     callback(null, res);
 });</code></pre>
-    <h2>完整示例代码</h2>
     <p>通过WriteStream接收网络中得到的数据：<a href="./download_file.js" target="_blank">download_file.js</a></p>
 </div>
 
@@ -372,20 +368,95 @@ urlget(response_timeout_url, function(err, res) {
 </div>
 
 <div class="slide">
-    <h2>Node0.5.x新增的进程通信方式</h2>
+    <h1>串、并行的异步调用</h1>
 </div>
 
 <div class="slide">
-    <h2>串、并行的异步调用</h2>
-    <h3>串行调用</h3>
-    <p></p>
-    <h3>并行调用</h3>
-    <p></p>
+    <h2>串行调用</h2>
+    <h3>嵌套Callback</h3>
+    <pre style="font-size: 24px;"><code><code style="color:yellow;">db.users.findOne</code>({name: 'foo'}, function(err, user) {
+    if(err) {
+        return next(err);
+    }
+    user.visit_count += 1;
+    var updates = {visit_count: user.visit_count};
+    <code style="color:yellow;">db.users.update</code>({_id: user._id}, {$set: updates}, 
+            function(err) {
+        if(err) {
+            return next(err);
+        }
+        res.render('profile', {user: user});
+    });
+});</code></pre>
 </div>
 
+<div class="slide">
+    <h2>并行调用</h2>
+    <h3>需要计数器辅助判断异步请求是否都完成了</h3>
+    <pre style="font-size: 24px;"><code>var counter = 2, post = null, comments = null;
+function handle() {
+    <code style="color:yellow;">if(--counter === 0) {</code>
+        callback(post, comments);
+    }
+};
+<code style="color:yellow;">db.posts.findOne</code>({_id: post_id}, function(err, p) {
+    post = p;
+    handle();
+});
+<code style="color:yellow;">db.comments.find</code>({pid: post_id}).toArray(function(err, cms) {
+    comments = cms;
+    handle();
+});</code></pre>
+</div>
+
+<div class="slide">
+    <h2>Callback, Callback, Callback and Callback</h2>
+    <h3>你肯定见过这样的代码</h3>
+    <pre style="font-size: 26px;"><code>
+foo(bar, function(err, data) {
+    // ... callback again again and again
+    // ...
+                            })
+                    // ...
+                })
+            })
+        })
+    })
+});</code></pre>
+</div>
+
+<div class="slide">
+    <h2>事件驱动 | EventProxy</h2>
+    <h3>将之前的串行和并行调用都混在一起</h3>
+    <pre style="font-size: 20px;"><code>var ep = new EventProxy();
+ep.assgin('user', 'post', 'comments', function(user, post, comments) {
+    callback(user, post, comments);
+});
+ep.on('user', function(user) {
+    <code style="color:yellow;">db.users.update(...);</code>
+});
+<code style="color:yellow;">db.users.findOne</code>({name: 'foo'}, function(err, user) {
+    ep.emit('user', user);
+});
+<code style="color:yellow;">db.posts.findOne</code>({_id: post_id}, function(err, post) {
+    ep.emit('post', post);
+});
+<code style="color:yellow;">db.comments.find</code>({pid: post_id})
+        .toArray(function(err, comments) {
+    ep.emit('comments', comments);
+});</code></pre>
+    <h2>更多关注 @朴灵 的分享</h2>
+</div>
+
+<div class="slide">
+    <h1>Q & A | 知乎 & 者也</h1>
+</div>
+
+<!-- 
 <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
 <a href="#" class="deck-next-link" title="Next">&#8594;</a>
-
+-->
+ 
 <p class="deck-status">
     <span class="deck-status-current"></span>
     /
