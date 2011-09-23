@@ -317,8 +317,8 @@ urlget(url, function(err, res) {
 // we'll use a single watcher for all sockets with the same timeout value
 // and a linked list. This technique is described in the libev manual:
 // http://pod.tst.eu/http://cvs.schmorp.de/libev/ev.pod#Be_smart_about_timeouts</code></pre>
-    <p>Nodejs已经知道会出现大量定时器的情景，于是利用单定时器和双向链表实现了一个非常高效的方案。    </p>
-    <p>像我示例中5秒超时，就算同时发起100000个请求，也只是使用一个Timer进行处理。
+    <p>Nodejs已经知道会出现大量定时器的情景，于是利用单定时器和双向链表实现了一个非常高效的方案。</p>
+    <p>像我示例中，超时时间都是固定的5秒和10秒，就算同时发起100000个请求，也只是使用一个Timer进行处理。
     因为使用双向链表，从链接remove的时间复杂度是O(1)，所以clearTimeout也是非常高效的。</p>
 </div>
 
