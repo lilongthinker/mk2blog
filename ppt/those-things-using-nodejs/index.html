@@ -70,10 +70,12 @@
             <p>什么？异步调用还有串行和并行？Callback、Callback ... and Callback</p>
         </li>
     </ol>
+    <h2>Who am I?</h2>
+    <h3>Twitter: @fengmk2, Weibo: @Python发烧友, FaWave</h3>
 </div>
 
 <div class="slide">
-    <h1>HTTP请求的超时处理</h1>
+    <h1 style="font-size: 76px;">HTTP请求的超时处理</h1>
 </div>
 
 <div class="slide">
@@ -81,7 +83,7 @@
     <p>Nodejs中请求一个HTTP URL非常方便：<code><a href="http://nodejs.org/docs/v0.5.5/api/http.html#http.request" target="_blank">http.request</a></code>，
     封装url get方法：
     </p>
-    <pre style="font-size: 26px;"><code>var http = require('http')
+    <pre style="font-size: 22px;"><code>var http = require('http')
   , parse = require('url').parse;
 function urlget(url, callback) {
     var info = parse(url)
@@ -95,14 +97,15 @@ function urlget(url, callback) {
 </div>
 
 <div class="slide">
-    <pre style="font-size: 24px;"><code>    var req = http.request(options, function(res) {
+    <pre style="font-size: 20px;"><code>    var req = http.request(options, function(res) {
         var chunks = [], length = 0;
         res.on('data', function(chunk) {
             length += chunk.length;
             chunks.push(chunk);
         }).on('end', function() {
-            var data = new Buffer(length), pos = 0;
-            for(var i = 0, l = chunks.length; i &lt; l; i++) {
+            var data = new Buffer(length), pos = 0
+              , l = chunks.length;
+            for(var i = 0; i &lt; l; i++) {
                 chunks[i].copy(data, pos);
                 pos += chunks[i].length;
             }
@@ -121,11 +124,11 @@ function urlget(url, callback) {
 <div class="slide">
     <h2>请求正常的URL</h2>
     <p>一般来说，urlget都能很好地按我们想象的方式正常工作：</p>
-    <pre style="font-size: 26px;"><code>var good_url = 'http://www.google.com/';
+    <pre style="font-size: 22px;"><code>var good_url = 'http://www.google.com/';
 urlget(good_url, function(err, res) {
     console.log('\nGET', good_url);
     if(err) {
-        console.log('error:', err, '\nResponse:\n', 
+        console.log('error:', err, '\nHeaders:\n', 
             res ? res.headers : null);
     } else {
         console.log('Headers:\n', res.headers, 
@@ -138,7 +141,7 @@ urlget(good_url, function(err, res) {
 <div class="slide">
     <h2>如果请求的URL响应时间很长呢？</h2>
     <p>例如一些被墙的服务，一些耗时不稳定的服务。即使是你自己的服务，也会有不稳定的时候。</p>
-    <pre style="font-size: 26px;"><code>var timeout_url = <code style="color:yellow;">'http://t.co/'</code>;
+    <pre style="font-size: 22px;"><code>var timeout_url = <code style="color:yellow;">'http://t.co/'</code>;
 urlget(timeout_url, function(err, res) {
     console.log('\nGET', timeout_url);
     if(err) {
@@ -212,8 +215,8 @@ request_timeout = setTimeout(function() {
         // ... 此处忽略相同部分的代码 ...
     }).on('error', function(err) {
         <code style="color:red;">// node0.5.x及以上，
-        // 调用req.abort()会触发一次“socket hang up” error
-        // 所以需要判断是否超时，如果是超时，则无需再回调异常结果</code>
+        // req.abort()会触发一次“socket hang up”
+        // 所以需要判断是否超时</code>
         <code style="color:yellow;">if(request_timeout) {
             clearTimeout(request_timeout);
             callback(err);
@@ -231,24 +234,24 @@ http.createServer(function(req, res) {
     var info = parse(req.url, true);
     var s = +info.query.s;
     // 响应第一批数据
-    <code style="color:red;">res.write('Please waitting for ' + s + ' seconds...');</code>
+    <code style="color:red;">res.write('Please waitting for ' 
+        + s + ' seconds...');</code>
     setTimeout(function() {
         // 模拟响应处理时间
         <code style="color:yellow;">res.end(s + ' seconds, url: ' + req.url);</code>
     }, s * 1000);
 }).listen(1984);
-console.log('Server start at http://localhost:1984/');</code></pre>
+console.log('Server http://localhost:1984/');</code></pre>
 </div>
 <div class="slide">
     <h2>响应超时了！</h2>
     <p>从代码中可以看到，一个请求过来，会马上响应第一批数据，
     接着在参数指定的时间后响应剩余的数据。对于这种情况，我们仅仅有请求超时还是不够的：</p>
-    <pre style="font-size: 24px;"><code>var response_timeout_url = 'http://localhost:1984/foo?s=10';
-urlget(response_timeout_url, function(err, res) {
-    console.log('\nGET', response_timeout_url);
+    <pre style="font-size: 22px;"><code>var url = 'http://localhost:1984/foo?s=10';
+urlget(url, function(err, res) {
     if(err) {
-        console.log('error:', util.inspect(err, true), 
-            '\nResponse:\n', res ? res.headers : null);
+        console.log('error:', err, 
+            '\nHeaders:\n', res ? res.headers);
     } else {
         console.log('Headers:\n', res.headers, 
             '\nBody:\n', res.body.toString());
@@ -280,8 +283,8 @@ urlget(response_timeout_url, function(err, res) {
             // ... 此处忽略相同部分的代码 ...
         })<code style="color:yellow;">.on('aborted', function() {
             if(response_timeout) {
-                // node0.5.x及以上：
-                // 当res有效的时候，req.abort()会触发res的aborted事件
+                // node0.5.x及以上：当res有效的时候，
+                // req.abort()会触发res的aborted事件
                 callback(new Error('Response aborted'), res);
             }
         })</code>;
@@ -303,11 +306,29 @@ urlget(response_timeout_url, function(err, res) {
 </div>
 
 <div class="slide">
-    <h1>Stream & 读写大文件</h1>
+    <h2>使用这么多定时器，会不会有性能问题？</h2>
+    <p>为了解决这个疑惑，就得深入源代码了，查看<a href="https://github.com/joyent/node/blob/master/lib/timers_legacy.js">lib/timers_legacy.js</a>。
+    从代码中会看到这段注释：
+    </p>
+    <pre><code style="font-size: 18px;">// IDLE TIMEOUTS
+//
+// Because often many sockets will have the same idle timeout we will not
+// use one timeout watcher per item. It is too much overhead.  Instead
+// we'll use a single watcher for all sockets with the same timeout value
+// and a linked list. This technique is described in the libev manual:
+// http://pod.tst.eu/http://cvs.schmorp.de/libev/ev.pod#Be_smart_about_timeouts</code></pre>
+    <p>Nodejs已经知道会出现大量定时器的情景，于是利用单定时器和双向链表实现了一个非常高效的方案。    </p>
+    <p>像我示例中5秒超时，就算同时发起100000个请求，也只是使用一个Timer进行处理。
+    因为使用双向链表，从链接remove的时间复杂度是O(1)，所以clearTimeout也是非常高效的。</p>
+</div>
+
+<div class="slide">
+    <h1>Stream <br/> & <br/>读写大文件</h1>
 </div>
 <div class="slide">
     <h2>Stream</h2>
-    <h3>流(Stream)，流窜在Nodejs的各个角落。<a href="http://nodejs.org/docs/v0.5.5/api/streams.html" target="_blank">Stream</a>有3种：只读，只写，读写。</h3>
+    <h3>流(Stream)，流窜在Nodejs的各个角落。</h3>
+    <h3><a href="http://nodejs.org/docs/v0.5.5/api/streams.html" target="_blank">Stream</a>有3种：只读，只写，读写。</h3>
     <h3>Stream继承了EventEmitter，正是Stream抽象出各种标准的事件，让文件流，网络流等有了标准的处理方式。</h3>
     <h3>Stream可以说是Nodejs事件驱动编程绝好范例。</h3>
     <h2>读写大文件 & 内存限制</h2>
@@ -449,7 +470,11 @@ ep.on('user', function(user) {
 </div>
 
 <div class="slide">
-    <h1>Q & A | 知乎 & 者也</h1>
+    <h1>Q & A <br /> 知乎者也</h1>
+</div>
+
+<div class="slide">
+    <h1>next("Thanks ^_^")</h1>
 </div>
 
 <!-- 
