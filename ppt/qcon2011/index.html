@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="../../lib/deck.js/extensions/status/deck.status.css">
     <link rel="stylesheet" href="../../lib/deck.js/extensions/hash/deck.hash.css">
     
+    <link rel="stylesheet" href="./introduction.css">
+    
     <!-- Theme CSS files (menu swaps these out) -->
     <link rel="stylesheet" id="style-theme-link" href="../../lib/deck.js/themes/style/neon.css">
     <link rel="stylesheet" id="transition-theme-link" href="../../lib/deck.js/themes/transition/horizontal-slide.css">
@@ -67,26 +69,543 @@
             <p>为什么Nodejs会比其他语言的Hello world性能要好？</p>
         </li>
         <li>
+            <h3>Buffer => fs => net => http => Stream</h3>
+            <p>从String到Buffer, 从Buffer到Stream，文件数据流，网络数据流<br/>
+            Javascript可以轻松地通过Socket实现各种网络协议，还有功能完善的HTTP模块。
+            </p>
+        </li>
+        <li>
             <h3>脱离了浏览器的Javascript</h3>
-            <p>一旦离开了浏览器，Javascript能带来更多什么魔法呢？</p>
-        </li>
-        <li>
-            <h3>Buffer</h3>
-            <p>从String到Buffer</p>
-        </li>
-        <li>
-            <h3>Stream</h3>
-            <p>从Buffer到Stream，文件数据流，网络数据流</p>
-        </li>
-        <li>
-            <h3>Net, HTTP, Socket</h3>
-            <p>Javascript可以轻松地通过Socket实现各种网络协议，还有功能完善的HTTP模块。</p>
+            <p>Nodejs能带来更多什么魔法呢？</p>
         </li>
         <li>
             <h3>第三方模块</h3>
             <p>第三方模块的持续增长和完善，让Nodejs的世界变得越来越有趣。还有模块管理神器：npm。</p>
         </li>
     </ol>
+</div>
+
+<div class="slide">
+    <h1>Hello world的性能对比</h1>
+</div>
+
+<div class="slide">
+    <h2>Nodejs的特点</h2>
+    <ul>
+        <li>单进程</li>
+        <li>非阻塞</li>
+        <li>事件驱动</li>
+    </ul>
+</div>
+
+<div class="slide">
+    <h2>Nodejs vs Tornado vs Go vs Netty</h2>
+    <ul>
+        <li>Python: Tornado: <a href="http://www.tornadoweb.org" target="_blank">http://www.tornadoweb.org</a></li>
+        <li>Go: <a href="http://golang.org" target="_blank">http://golang.org</a></li>
+        <li>Java, Netty: <a href="http://www.jboss.org/netty/" target="_blank">http://www.jboss.org/netty/</a></li>
+    </ul>
+</div>
+
+<div class="slide">
+    <h2>Python: Tornado</h2>
+    <pre style="font-size: 22px;"><code>import tornado.ioloop
+import tornado.web
+
+class MainHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write("Hello, world")
+
+application = tornado.web.Application([
+    (r"/", MainHandler),
+])
+
+if __name__ == "__main__":
+    application.listen(8080)
+    tornado.ioloop.IOLoop.instance().start()
+    </code></pre>
+</div>
+
+<div class="slide">
+    <h2>Go: </h2>
+    <pre style="font-size: 22px;"><code>package main
+import (
+   "http"
+   "io"
+)
+func handler(w http.ResponseWriter, r *http.Request) {
+    io.WriteString(c, "Hello, world")
+}
+func main() {
+     http.HandleFunc("/", handler)
+     http.ListenAndServe(":8080", nil)
+}
+    </code></pre>
+</div>
+
+<div class="slide">
+    <h2>Java, Netty: </h2>
+    <pre style="font-size: 22px;"><code>package main
+import (
+   "http"
+   "io"
+)
+func handler(w http.ResponseWriter, r *http.Request) {
+    io.WriteString(c, "Hello, world")
+}
+func main() {
+     http.HandleFunc("/", handler)
+     http.ListenAndServe(":8080", nil)
+}
+    </code></pre>
+</div>
+
+<div class="slide">
+    <h2>Nodejs: </h2>
+    <pre style="font-size: 22px;"><code>var http = require('http');
+http.createServer(function(req, res) {
+    res.end('Hello, World');
+}).listen(8080);
+    </code></pre>
+</div>
+
+<div class="slide">
+    <h2>测试脚本</h2>
+    <p>$ ab -c 30 -n 1000000 http://127.0.0.1:8080/</p>
+    <h2>测试结果对比</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>30 threads</th>
+            <th>100 threads</th>
+            <th>1000 threads</th>
+            <th>5000 threads</th>
+        </tr>
+        <tr>
+            <td>Nodejs</td>
+            <td>4,908</td>
+            <td>4,908</td>
+            <td>4,908</td>
+            <td>4,908</td>
+        </tr>
+        <tr>
+            <td>Python: Tornado</td>
+            <td>4,908</td>
+            <td>4,908</td>
+            <td>4,908</td>
+            <td>4,908</td>
+        </tr>
+        <tr>
+            <td>Go</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Java: Netty</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<div class="slide">
+    <h1>String => Buffer => Stream</h1>
+</div>
+
+<div class="slide">
+    <h2>原生Javascript对数据处理的局限性</h2>
+	<ul>
+		<li class="slide">
+		    <h3>原生Javascript只有Unicode String</h3>
+		</li>
+		<li class="slide">
+			<h3>难以处理流数据</h3>
+			<h3>在处理TCP流和文件系统时经常需要操作字节流。<br/>
+			原生Javascript处理起来会很吃力。</h3>
+		</li>
+		<li class="slide">
+			<h3>
+				<a href="http://code.google.com/p/v8/issues/detail?id=847#c4">V8 1GB 堆栈内存限制</a>
+			</h3>
+			<h3>大文件怎么办呢？处理的数据需要占用超过1GB内存怎么处理呢？</h3>
+		</li>
+	</ul>
+</div>
+
+<div class="slide">
+    <h2>Buffer</h2>
+	<ul>
+		<li class="slide">
+			<h3>Buffer存储字节流数据，类似于一个整数数组。</h3>
+			<p>解决：流数据处理问题</p>
+		</li>
+		<li class="slide">
+			<h3>在 V8堆（the V8 heap）外的原始存储空间分配。</h3>
+			<p>解决：V8 1GB 堆栈内存限制</p>
+		</li>
+		<li class="slide">
+			<h3>
+				一旦创建了Buffer实例，则无法改变其大小。<br />分配给进程的一块内存空间。
+			</h3>
+		</li>
+	</ul>
+</div>
+
+<div class="slide">
+    <h2>Buffer</h2>
+    <pre style="font-size: 22px;"><code>// buffer.js
+var a = new Buffer(10);
+console.log(a, a.toString());
+var b = new Buffer('QCon2011杭州');
+console.log(b, b.toString());</code></pre>
+    <pre style="font-size: 18px;"><code>$ node buffer.js
+&lt;Buffer 05 08 4e 00 2f 0f 26 05 04 4e> '\u0005\bN\u0000/\u000f&\u0005\u0004N'
+&lt;Buffer 51 43 6f 6e 32 30 31 31 e6 9d ad e5 b7 9e> 'QCon2011杭州'</code></pre>
+</div>
+
+<div class="slide">
+    <h2>fs, net, http(s)</h2>
+    <ul>
+        <li class="slide">
+            <h3>操作文件系统：var fs = require('fs')</h3>
+            <p>文件的I/O是由标准POSIX函数封装而成。<br/>
+            所有的方法都提供了异步和同步两种方式。</p>
+        </li>
+        <li class="slide">
+            <h3>网络操作：var net = require('net')</h3>
+            <p>提供了一种<strong style="color:yellow;">异步</strong>网络包装器，<br/>它包含创建服务器和客户端（称为streams）所需的方法(只提供异步方式)。</p>
+        </li>
+        <li class="slide">
+            <h3>便捷得HTTP的服务器以及客户端：var http(s) = require('http[s]')</h3>
+            <p>Node中的HTTP接口在设计时就考虑到了要支持HTTP协议的很多特性，并且使用简单。<br/>
+            特别是可以处理那些内容庞大，有可能是块编码的消息。<br/>
+            该接口被设计为从不缓冲整个请求或相应，这样用户就可以以<strong style="color:yellow;">流的方式</strong>处理数据。</p>
+        </li>
+    </ul>
+</div>
+
+<div class="slide">
+    <h2>fs, net, http(s)</h2>
+    <h3>fs的同步方法</h3>
+    <pre style="font-size: 26px;"><code>// $ touch /tmp/helloSync
+fs.renameSync('/tmp/helloSync', '/tmp/worldSync');
+var stats = fs.statSync('/tmp/worldSync');
+console.log('statsSync:' + JSON.stringify(stats));</code></pre>
+</div>
+
+<div class="slide">
+    <h2>fs, net, http(s)</h2>
+    <h3>fs的异步方法</h3>
+    <pre style="font-size: 24px;"><code>var fs = require('fs');
+// $ touch /tmp/hello
+fs.rename('/tmp/hello', '/tmp/world', function (err) {
+  if (err) throw err;
+  fs.stat('/tmp/world', function (err, stats) {
+    if (err) throw err;
+    console.log('stats: ' + JSON.stringify(stats));
+  });
+});</code></pre>
+</div>
+
+<div class="slide">
+    <h2>fs, net, http(s)</h2>
+    <h3>最简单的telnet聊天室(1)</h3>
+    <pre style="font-size: 24px;"><code>// chat.js
+var net = require('net');
+var clients = [];
+net.createServer(function(client) {
+    client.write('Enter your name:\n');
+    client.once('data', function(data) {
+        var username = data.toString().trim();
+        clients.push(client);
+        broacast(username + ' : Join!\n');
+        client.on('data', function(data) {
+            var text = username + ' : ' + data;
+            broacast(text);
+        });
+    });
+}).listen(11021);</code></pre>
+</div>
+
+<div class="slide">
+    <h2>fs, net, http(s)</h2>
+    <h3>最简单的telnet聊天室(2)</h3>
+    <pre style="font-size: 26px;"><code>// 单进程的优势。。。
+function broacast(text) {
+    console.log(text.trim());
+    for(var i = 0, l = clients.length; i < l; i++) {
+        var c = clients[i];
+        c.write(text);
+    }
+};</code></pre>
+</div>
+
+<div class="slide">
+    <h2>fs, net, http(s)</h2>
+    <h3>最简单的telnet聊天室(3)</h3>
+    <h3>Server: $ node chat.js</h3>
+    <pre style="font-size: 22px;"><code>mk2 : Join!
+mk2 : Hello qcon2011 hangzhou!
+</code></pre>
+    <h3>Client: $ telnet 192.168.1.xxx 11021</h3>
+    <pre style="font-size: 22px;"><code>Enter your name:
+mk2
+mk2 : Join!
+Hello qcon2011 hangzhou!
+mk2 : Hello qcon2011 hangzhou!</code></pre>
+</div>
+
+<div class="slide">
+    <h2>fs, net, http(s)</h2>
+    <h3>http server</h3>
+    <pre style="font-size: 22px;"><code>var http = require('http');
+http.createServer(function(req, res) {
+    if(req.url === '/') {
+        res.end('Hello world');
+    } else {
+        res.end('HTTP ' + req.method + ' : ' + req.url);
+    }
+}).listen(8080);</code></pre>
+</div>
+
+<div class="slide">
+    <h2>fs, net, http(s)</h2>
+    <h3>http client</h3>
+    <pre style="font-size: 22px;"><code>var http = require('http');
+var options = {
+  host: 'www.google.com',
+  port: 80,
+  path: '/index.html'
+};
+
+http.get(options, function(res) {
+  console.log("Got response: " + res.statusCode);
+  res.on('data', function(data) {
+    console.log(data.toString());
+  });
+}).on('error', function(e) {
+  console.log("Got error: " + e.message);
+});</code></pre>
+</div>
+
+<div class="slide">
+    <h2>Stream: 流的方式</h2>
+    <ul>
+        <li class="slide">
+            <h3>Stream（流）是一个由不同对象实现的抽象接口。</h3>
+            <p>例如请求HTTP服务器的request是一个流，类似于stdout（标准输出）。<br/>
+            读取文件可以是一个文件流。
+            </p>
+        </li>
+        <li class="slide">
+            <h3>流可以是可读的，可写的，或者既可读又可写。</h3>
+        </li>
+        <li class="slide">
+            <h3>
+                所有流都是EventEmitter的实例(事件驱动)。
+            </h3>
+        </li>
+        <li class="slide">
+            <h3>形象地如流水一般，数据在各个流之间可以按水流方向流动(Pipe)。</h3>
+        </li>
+    </ul>
+</div>
+
+<div class="slide">
+    <h2>上传大文件：fs.ReadStream</h2>
+    <h3>创建只读文件流</h3>
+    <pre><code>var readstream = fs.createReadStream(uploadfile);</code></pre>
+    <h3>通过监听文件的data事件，获取数据，就像它自己会吐数据出来一样
+    而不用自己去调用read方法，一点一点地去取数据</h3>
+    <pre><code>readstream.on('data', function(chunk) {
+    console.log('write', chunk.length);
+    // 向服务器发送数据
+    req.write(chunk);
+});</code></pre>
+    <h3>通过end事件可以判断文件数据是否全部读取完了</h3>
+    <pre><code>readstream.on('end', function() {
+    req.end();
+});</code></pre>
+</div>
+
+<div class="slide">
+    <h2>Pipe：将水管连接起来</h2>
+    <p>嫌既监听data又要监听end事件很麻烦？那就试试<a href="http://nodejs.org/docs/v0.5.5/api/streams.html#stream.pipe" target="_blank">pipe</a>吧，简直像安装水管那么简单。</p>
+    
+    <h3>直接使用pipe，想象两端水管，我们只需将他们按照水流方向连接起来即可（吐数据 ==> 收数据）
+    当数据读取完，会自动触发req.end()</h3>
+    <pre style="font-size: 24px;"><code>readstream.pipe(req);</code></pre>
+    <h3>你没眼花，就是一行代码这么简单，所有数据就会自动发出去了。</h3>
+    <h2>:) 呵呵，原来程序员也是水电工。</h2>
+    <h2>完整示例代码</h2>
+    <p>通过readStream读取大文件并发送到网络中去：<a href="./upload_file.js" target="_blank">upload_file.js</a></p>
+</div>
+
+<div class="slide">
+    <h2>下载大文件：fs.WriteStream</h2>
+    <h3>创建只写文件流</h3>
+    <pre><code>var writestream = fs.createWriteStream(savefile);</code></pre>
+    <h3>继续做水电工，安装水管，还是以水流的方向安装<br/>
+    （吐数据 ==> 收数据）
+        这次网络流变成吐数据，文件流变成收数据</h3>
+    <pre><code>res.pipe(writestream);</code></pre>
+    <p>PS：非pipe方式请发挥你的水电工想象力。</p>
+    <h3>文件句柄已关闭，回调结果</h3>
+    <pre><code>writestream.on('close', function() {
+    callback(null, res);
+});</code></pre>
+    <p>通过WriteStream接收网络中得到的数据：<a href="./download_file.js" target="_blank">download_file.js</a></p>
+</div>
+
+<div class="slide">
+    <h2>程序员水电工：Pipe</h2>
+    <img src="shuidiangong.jpg" />
+</div>
+
+<div class="slide">
+    <h2>脱离了浏览器的Javascript</h2>
+    <p>Nodejs能带来更多什么魔法呢？</p>
+    <ul>
+        <li class="slide">不受限制地访问文件和网络资源</li>
+        <li class="slide">忘记跨域访问的烦恼吧</li>
+        <li class="slide">服务端程序</li>
+        <li class="slide">桌面程序</li>
+        <li class="slide">它能完成你所熟悉的语言能完成的事情</li>
+    </ul>
+    <h2 class="slide">你熟悉的语言能完成的事情, Nodejs也能完成</h2>
+</div>
+
+<div class="slide">
+    <h2>服务端程序</h2>
+    <ul>
+        <li class="slide"><h3>常规Web应用</h3></li>
+	    <li class="slide"><h3>实时性强的网络应用</h3></li>
+	    <li class="slide"><h3>网络中间层服务</h3></li>
+	    <li class="slide"><h3>......</h3></li>
+    </ul>
+    <h2 class="slide">特别适合各类 <strong>网络IO密集型</strong> 应用</h2>
+</div>
+
+<div class="slide">
+    <h2>常规Web应用</h2>
+    <a href="http://taojob.tbdata.org" target="_blank">淘job</a>: 基于微博的企业化招聘网站
+    <img src="./taojob.jpg" />
+</div>
+
+<div class="slide">
+    <h2>实时性强的网络应用</h2>
+    <a href="https://trello.com" target="_blank">Trello</a>: 团队协作工具，它的3个核心原则：实时更新，设备独立性，和最小摩擦。
+    <img src="./trello.jpg" />
+</div>
+
+<div class="slide">
+    <h2>实时性强的网络应用</h2>
+    <img src="./trello-card.jpg" />
+</div>
+
+<div class="slide">
+    <h2>实时性强的网络应用</h2>
+    <a href="http://paint.cnodejs.net/" target="_blank">PaintChat</a>: 可以协作绘图的聊天室。
+    <img src="./paintchat.jpg" />
+</div>
+
+<div class="slide">
+    <h2>实时性强的网络应用</h2>
+    <img style="width: 100%" src="./paintchat-demo.jpg" />
+</div>
+
+<div class="slide">
+    <h2>实时性强的网络应用</h2>
+    <a href="https://github.com/Instagram/Realtime-Demo" target="_blank">Instagram Real-time API Demo</a>: Instagram 官方给出的一个实时应用，服务器实时推送最新上传的照片到浏览器上显示。
+    基于Socket.io模块实现的。
+    <img src="./instagram-demo.png" />
+</div>
+
+<div class="slide">
+    <h2>实时性强的网络应用</h2>
+    <a href="http://cloud9ide.com/" target="_blank">Cloud9</a>: Web IDE，随时随地写代码。
+    <img src="./cloud9.jpg" />
+</div>
+
+<div class="slide">
+    <h2>网络中间层服务</h2>
+    <a href="http://www.slideshare.net/aleafs/myfox-on-nodejs" target="_blank">Nodefox</a>: 一个数据处理中间件，负责从一个MySQL集群中提取数据，计算，并输出统计结果。
+    <img src="./nodefox1.jpg" />
+</div>
+
+<div class="slide">
+    <h2>网络中间层服务</h2>
+    Nodefox的查询过程
+    <img src="./nodefox2.jpg" />
+</div>
+
+<div class="slide">
+    <h2>网络中间层服务</h2>
+    <a href="http://loggly.com/" target="_blank">Loggly</a>: 收集syslog和HTTP日志的Web服务。
+    <img src="./loggly.png" />
+</div>
+
+<div class="slide">
+    <h2>网络中间层服务</h2>
+    <a href="http://cnodejs.net/" target="_blank">NAE Proxy</a>: Node App Engine的Http proxy，
+    将应用的端口映射到本地socket。
+    <img src="./nae-proxy.jpg" />
+</div>
+
+<div class="slide">
+    <h2>桌面程序</h2>
+    <a href="https://github.com/unconed/TermKit" target="_blank">TermKit</a>: next gen terminal / command application, built out of WebKit and Node.js.
+    <img src="./termkit.png" />
+</div>
+
+<div class="slide">
+    <img src="./termkit-2.png" />
+</div>
+
+<div class="slide">
+    <h2>桌面程序</h2>
+    @小型笨蛋 在尝试使用<a href="http://weibo.com/1700189015/xrQf0fQOi" target="_blank">nodejs驱动GTK+ demo</a>
+    <img src="./node-gtk.jpg" />
+</div>
+
+<div class="slide">
+    <h2>第三方模块</h2>
+    <h3>Nodejs官方收集的<a href="https://github.com/joyent/node/wiki/modules">第三方模块</a>页面上，
+    共列出了<strong style="color: blue;font-size: 40px;">1152</strong>个模块。</h3>
+    <h3>涵盖了Web，Database，Templating，CSS Engines，CMS，Build and Deployment，Openssl, Hashing，SMTP，
+    TCP/IP，RPC，Web Sockets & Ajax，Message Queues，Testing，JSON，XML，Debugging，Compression，
+    Graphics，Payment Gateways，API clients，Control flow / Async goodies，I18n and L10n modules等等，
+    几乎涉及了网络开发中需要的功能模块。</h3>
+</div>
+
+<div class="slide">
+    <h2>模块管理工具: npm, http://npmjs.org/</h2>
+    <img src="./npm.jpg" />
+    <h3>在npm上目前管理着<strong style="color: blue;font-size: 40px;">4427+</strong>个nodejs模块，
+    只需要简单一行命令，即可安装你需要得模块，例如我想使用nodejs访问mysql数据库：</h3>
+    <h3>$ npm install mysql</h3>
+</div>
+
+<div class="slide">
+    <h2>常用模块</h2>
+    <ul>
+        <li><h3>中间件Middleware：Connect 是一个可扩展的HTTP server框架，提供了许多高效的插件。</h3></li>
+        <li><h3>Web框架：Express, webjs</h3></li>
+        <li><h3>数据库驱动：node-mysql, redis-node, node-mongoskin</h3></li>
+        <li><h3>Web Sockets & Ajax, RPC：Socket.io, nowjs</h3></li>
+        <li><h3>单元测试：nodeunit, expresso</h3></li>
+        <li><h3>流程控制/解决异步嵌套：EventProxy, Jscex, async</h3></li>
+    </ul>
+</div>
+
+<div class="slide">
+    <h2>Node's goal</h2>
+    <h3>Provide an <strong style="color: blue;font-size: 100px;">easy</strong> way to build scalable network programs. </h3>
+    <h3>提供一种<strong style="color: blue;font-size: 100px;">便捷</strong>的方式构建网络程序。</h3>
 </div>
 
 <div class="slide">
