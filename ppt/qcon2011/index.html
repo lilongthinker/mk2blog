@@ -99,11 +99,11 @@
 </div>
 
 <div class="slide">
-    <h2>Nodejs vs Tornado vs Go vs Netty</h2>
+    <h2>Nodejs vs Tornado vs Go</h2>
     <ul>
+        <li>Nodejs: <a href="http://nodejs.org" target="_blank">http://nodejs.org</a></li>
         <li>Python: Tornado: <a href="http://www.tornadoweb.org" target="_blank">http://www.tornadoweb.org</a></li>
         <li>Go: <a href="http://golang.org" target="_blank">http://golang.org</a></li>
-        <li>Java, Netty: <a href="http://www.jboss.org/netty/" target="_blank">http://www.jboss.org/netty/</a></li>
     </ul>
 </div>
 
@@ -144,23 +144,6 @@ func main() {
 </div>
 
 <div class="slide">
-    <h2>Java, Netty: </h2>
-    <pre style="font-size: 22px;"><code>package main
-import (
-   "http"
-   "io"
-)
-func handler(w http.ResponseWriter, r *http.Request) {
-    io.WriteString(c, "Hello, world")
-}
-func main() {
-     http.HandleFunc("/", handler)
-     http.ListenAndServe(":8080", nil)
-}
-    </code></pre>
-</div>
-
-<div class="slide">
     <h2>Nodejs: </h2>
     <pre style="font-size: 22px;"><code>var http = require('http');
 http.createServer(function(req, res) {
@@ -170,44 +153,54 @@ http.createServer(function(req, res) {
 </div>
 
 <div class="slide">
+    <h2>测试环境</h2>
+    <h3>CPU：</h3>
+    <p>$ cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c</p>
+    <h3>8  Intel(R) Xeon(R) CPU           E5410  @ 2.33GHz</h3>
+    <h3>内存：16GB</h3>
+    <h3>操作系统：</h3>
+    <p> $ cat /etc/issue | grep Linux</p>
+    <h3>Red Hat Enterprise Linux Server release 5.4 (Tikanga)</h3>
+</div>
+
+<div class="slide">
     <h2>测试脚本</h2>
     <p>$ ab -c 30 -n 1000000 http://127.0.0.1:8080/</p>
     <h2>测试结果对比</h2>
-    <table>
+    <style>
+    #datatable td, #datatable th {
+        border: 1px solid white;
+        padding: 5px;
+    }
+    </style>
+    <table id="datatable">
         <tr>
             <th>Name</th>
-            <th>30 threads</th>
-            <th>100 threads</th>
-            <th>1000 threads</th>
-            <th>5000 threads</th>
+            <th>30 threads rps</th>
+            <th>100 rps</th>
+            <th>1000 rps</th>
+            <th>5000 rps</th>
         </tr>
         <tr>
             <td>Nodejs</td>
-            <td>4,908</td>
-            <td>4,908</td>
-            <td>4,908</td>
-            <td>4,908</td>
+            <td>7,287</td>
+            <td>7,038</td>
+            <td>6,786</td>
+            <td>6,912</td>
         </tr>
         <tr>
             <td>Python: Tornado</td>
-            <td>4,908</td>
-            <td>4,908</td>
-            <td>4,908</td>
-            <td>4,908</td>
+            <td>2,967</td>
+            <td>2,966</td>
+            <td>2,967</td>
+            <td>2,982</td>
         </tr>
         <tr>
             <td>Go</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Java: Netty</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>5,214</td>
+            <td>5,157</td>
+            <td>5,080</td>
+            <td>5,164</td>
         </tr>
     </table>
 </div>
