@@ -1,14 +1,15 @@
-import tornado.ioloop
-import tornado.web
+from tornado.ioloop import IOLoop
+from tornado.web import RequestHandler, \
+                        Application
 
-class MainHandler(tornado.web.RequestHandler):
+class MainHandler(RequestHandler):
     def get(self):
         self.write("Hello, world")
 
-application = tornado.web.Application([
+application = Application([
     (r"/", MainHandler),
 ])
 
 if __name__ == "__main__":
     application.listen(8080)
-    tornado.ioloop.IOLoop.instance().start()
+    IOLoop.instance().start()

@@ -6,7 +6,7 @@ import (
    "io"
 )
 func handler(w http.ResponseWriter, r *http.Request) {
-    io.WriteString(c, "Hello, world")
+    io.WriteString(w, "Hello, world")
 }
 func main() {
      http.HandleFunc("/", handler)
