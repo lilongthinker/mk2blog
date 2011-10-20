@@ -495,3 +495,72 @@ Percentage of the requests served within a certain time (ms)
  100%  189021 (longest request)
  
 --------------------------------------------------------------
+
+Netty
+
+--------------------------------------------------------------
+
+ab -c 30 -n 1000000 http://127.0.0.1:11021/
+
+Benchmarking 127.0.0.1 (be patient)
+Completed 100000 requests
+Completed 200000 requests
+Completed 300000 requests
+Completed 400000 requests
+Completed 500000 requests
+Completed 600000 requests
+Completed 700000 requests
+Completed 800000 requests
+Completed 900000 requests
+Completed 1000000 requests
+Finished 1000000 requests
+
+
+Server Software:        
+Server Hostname:        127.0.0.1
+Server Port:            11021
+
+Document Path:          /
+Document Length:        11 bytes
+
+Concurrency Level:      30
+Time taken for tests:   74.597 seconds
+Complete requests:      1000000
+Failed requests:        0
+Write errors:           0
+Total transferred:      90000720 bytes
+HTML transferred:       11000088 bytes
+Requests per second:    13405.37 [#/sec] (mean)
+Time per request:       2.238 [ms] (mean)
+Time per request:       0.075 [ms] (mean, across all concurrent requests)
+Transfer rate:          1178.22 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0       4
+Processing:     0    2   7.0      2     512
+Waiting:        0    1   6.9      1     511
+Total:          0    2   7.0      2     513
+
+Percentage of the requests served within a certain time (ms)
+  50%      2
+  66%      2
+  75%      2
+  80%      2
+  90%      3
+  95%      3
+  98%      3
+  99%      4
+ 100%    513 (longest request)
+ 
+ --------------------------------------------------------------
+
+ab -c 100 -n 1000000 http://127.0.0.1:11021/
+
+--------------------------------------------------------------
+
+ab -c 1000 -n 1000000 http://127.0.0.1:11021/
+
+--------------------------------------------------------------
+
+ab -c 5000 -n 1000000 http://127.0.0.1:11021/
