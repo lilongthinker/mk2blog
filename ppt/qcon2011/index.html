@@ -14,22 +14,22 @@
     <meta name="viewport" content="width=1024, user-scalable=no">
     
     <!-- Core and extension CSS files -->
-    <link rel="stylesheet" href="../../lib/deck.js/core/deck.core.css">
-    <link rel="stylesheet" href="../../lib/deck.js/extensions/goto/deck.goto.css">
-    <link rel="stylesheet" href="../../lib/deck.js/extensions/menu/deck.menu.css">
-    <link rel="stylesheet" href="../../lib/deck.js/extensions/navigation/deck.navigation.css">
-    <link rel="stylesheet" href="../../lib/deck.js/extensions/status/deck.status.css">
-    <link rel="stylesheet" href="../../lib/deck.js/extensions/hash/deck.hash.css">
+    <link rel="stylesheet" href="./lib/deck.js/core/deck.core.css">
+    <link rel="stylesheet" href="./lib/deck.js/extensions/goto/deck.goto.css">
+    <link rel="stylesheet" href="./lib/deck.js/extensions/menu/deck.menu.css">
+    <link rel="stylesheet" href="./lib/deck.js/extensions/navigation/deck.navigation.css">
+    <link rel="stylesheet" href="./lib/deck.js/extensions/status/deck.status.css">
+    <link rel="stylesheet" href="./lib/deck.js/extensions/hash/deck.hash.css">
     
     <link rel="stylesheet" href="./prettify.css">
     
     <link rel="stylesheet" href="./introduction.css">
     
     <!-- Theme CSS files (menu swaps these out) -->
-    <link rel="stylesheet" id="style-theme-link" href="../../lib/deck.js/themes/style/neon.css">
-    <link rel="stylesheet" id="transition-theme-link" href="../../lib/deck.js/themes/transition/horizontal-slide.css">
+    <link rel="stylesheet" id="style-theme-link" href="./lib/deck.js/themes/style/neon.css">
+    <link rel="stylesheet" id="transition-theme-link" href="./lib/deck.js/themes/transition/horizontal-slide.css">
     
-    <script src="../../lib/deck.js/modernizr.custom.js"></script>
+    <script src="./lib/deck.js/modernizr.custom.js"></script>
     <script src="./prettify.js"></script>
 </head>
 
@@ -40,17 +40,17 @@
     
     <label for="style-themes">Style:</label>
     <select id="style-themes">
-        <option value="../../lib/deck.js/themes/style/web-2.0.css">Web 2.0</option>
-        <option value="../../lib/deck.js/themes/style/swiss.css">Swiss</option>
-        <option selected value="../../lib/deck.js/themes/style/neon.css">Neon</option>
+        <option value="./lib/deck.js/themes/style/web-2.0.css">Web 2.0</option>
+        <option value="./lib/deck.js/themes/style/swiss.css">Swiss</option>
+        <option selected value="./lib/deck.js/themes/style/neon.css">Neon</option>
         <option value="">None</option>
     </select>
     
     <label for="transition-themes">Transition:</label>
     <select id="transition-themes">
-        <option selected value="../../lib/deck.js/themes/transition/horizontal-slide.css">Horizontal Slide</option>
-        <option value="../../lib/deck.js/themes/transition/vertical-slide.css">Vertical Slide</option>
-        <option value="../../lib/deck.js/themes/transition/fade.css">Fade</option>
+        <option selected value="./lib/deck.js/themes/transition/horizontal-slide.css">Horizontal Slide</option>
+        <option value="./lib/deck.js/themes/transition/vertical-slide.css">Vertical Slide</option>
+        <option value="./lib/deck.js/themes/transition/fade.css">Fade</option>
         <option value="">None</option>
     </select>
 </div>
@@ -249,7 +249,7 @@ cluster(server)
             <td> 7,921</td>
         </tr>
         <tr class="slide">
-            <td>Nodejs 4CPU</td>
+            <td>Nodejs 4P</td>
             <td>14,826</td>
             <td>14,332</td>
             <td>12,161</td>
@@ -328,7 +328,7 @@ console.log(b, b.toString());</code></pre>
             <p>提供了一种<strong style="color:yellow;">异步</strong>网络包装器，<br/>它包含创建服务器和客户端（称为streams）所需的方法(只提供异步方式)。</p>
         </li>
         <li class="slide">
-            <h3>便捷得HTTP的服务器以及客户端：<br/>var http(s) = require('http[s]')</h3>
+            <h3>HTTP 服务以及客户端：<br/>var http(s) = require('http[s]')</h3>
             <p>Node中的HTTP接口在设计时就考虑到了要支持HTTP协议的很多特性，并且使用简单。<br/>
             特别是可以处理那些内容庞大，有可能是块编码的消息。<br/>
             该接口被设计为从不缓冲整个请求或相应，这样用户就可以以<strong style="color:yellow;">流的方式</strong>处理数据。</p>

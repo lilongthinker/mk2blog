@@ -1,3 +1,6 @@
+.deck-container {
+	width: 90%;
+}
 .deck-container .theme-menu {
   display: none;
   position: fixed;
