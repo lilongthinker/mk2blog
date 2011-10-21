@@ -101,8 +101,6 @@
         <li><h3>异步非阻塞</h3></li>
         <li><h3>事件驱动</h3></li>
     </ul>
-    <p>选择对比条件：</p>
-    <h3>单进程，异步非阻塞</h3>
 </div>
 
 <div class="slide">
@@ -177,6 +175,20 @@ http.createServer(function(req, res){
 </div>
 
 <div class="slide">
+    <h2>Nodejs: 4CPU</h2>
+    <pre style="font-size: 32px;" class="prettyprint lang-js"><code>var cluster = require('cluster')
+  , http = require('http');
+var server = 
+  http.createServer(function(req, res) {
+    res.end('Hello World');
+});
+cluster(server)
+.set('workers', 4)
+.use(cluster.stats())
+.listen(8080);</code></pre>
+</div>
+
+<div class="slide">
     <h2>测试环境</h2>
     <h3>CPU：</h3>
     <p>$ cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c</p>
@@ -231,10 +243,17 @@ http.createServer(function(req, res){
         </tr>
         <tr>
             <td>Netty</td>
-            <td>13405</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>13,526</td>
+            <td>13,351</td>
+            <td>11,332</td>
+            <td> 7,921</td>
+        </tr>
+        <tr class="slide">
+            <td>Nodejs 4CPU</td>
+            <td>14,826</td>
+            <td>14,332</td>
+            <td>12,161</td>
+            <td> 8,287</td>
         </tr>
     </table>
     <br/>
