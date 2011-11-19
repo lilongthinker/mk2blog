@@ -6,3 +6,11 @@
 * [编码大全 拔赤](http://www.slideshare.net/lijing00333/ss-9016595)
 * [该死的URIencode](http://www.douban.com/note/176096200/)
 * [javascript嵌套函数的效率问题](http://www.js8.in/809.html)， http://jsperf.com/nested-named-functions
+* [A re-introduction to JavaScript](https://developer.mozilla.org/cn/A_re-introduction_to_JavaScript)
+* [JavaScript: The World's Most Misunderstood Programming Language](http://javascript.crockford.com/javascript.html)
+* [__proto__ : 實體關係的確定](https://developer.mozilla.org/zh_tw/Core_JavaScript_1.5_%E6%95%99%E5%AD%B8/%E5%86%8D%E8%AB%87%E5%B1%AC%E6%80%A7%E7%9A%84%E7%B9%BC%E6%89%BF/%E5%AF%A6%E9%AB%94%E9%97%9C%E4%BF%82%E7%9A%84%E7%A2%BA%E5%AE%9A)
+* [CoffeeScript语言参考](http://www.ituring.com.cn/article/559)
+* [正确使用JS中的正则](http://www.laruence.com/2009/08/09/1036.html): 啃爹的g和lastIndex
+* [Loop Benchmarks](http://blogs.oracle.com/greimer/resource/loop-test.html)
+* [insertAdjacentHTML() Enables Faster HTML Snippet Injection](http://hacks.mozilla.org/2011/11/insertadjacenthtml-enables-faster-html-snippet-injection/)
+

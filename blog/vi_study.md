@@ -1,18 +1,21 @@
 # vi Learn on the road
-# .vimrc config by me
-set expandtab 
-set tabstop=4
-set shiftwidth=4
-set nonumber
-set smarttab
+
+## vim config file
+
+    # .vimrc config by me
+    set expandtab 
+    set tabstop=4
+    set shiftwidth=4
+    set nonumber
+    set smarttab
 
 k up l right j down h right;
 space right;
 G move cursor to header of end line of file; 
 
-function foo(abc){
-	console.log('hello world');
-};
+    function foo(abc){
+    	console.log('hello world');
+    };
 
 u undo last change; U undo all changes to entire line;
 
@@ -29,15 +32,17 @@ R Overwrite char form cursor onward;
 s Substitute entire line
 abc on right
 
-function a(){
-	function() {
-		console.log('hello world');
-	}
-}
-:r !date
-2011年 04月 01日 星期五 20:52:55 CST
+    function a(){
+    	function() {
+    		console.log('hello world');
+    	}
+    }
 
-* 查找当前单词
+    :r !date
+    2011年 04月 01日 星期五 20:52:55 CST
 
-:s/\t/    /g
+查找当前单词
+
+    :s/\t/    /g
+    
 replace tab to 4 space in current line.(how to replace all?)
