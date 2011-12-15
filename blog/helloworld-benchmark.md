@@ -31,10 +31,10 @@
 * v0.6.x
 <table>
     <tr>
-        <th>0.6.2</th><th>0.6.1</th><th>0.6.0</th>
+        <th>0.6.5</th><th>0.6.4</th><th>0.6.3</th><th>0.6.2</th><th>0.6.1</th><th>0.6.0</th>
     </tr>
     <tr>
-        <td>8137.79</td><td>8239.6</td><td>8157.38</td>
+        <td>8060.28</td><td>8111</td><td>8070</td><td>8137.79</td><td>8239.6</td><td>8157.38</td>
     </tr>
 </table>
 * v0.5.x
@@ -117,6 +117,25 @@
     startup.js                  152.81 ms   52.04 ms
 
 v0.4 和 v0.6之间的更新说明请查看: [API-changes-between-v0.4-and-v0.6](https://github.com/joyent/node/wiki/API-changes-between-v0.4-and-v0.6)
+
+## node0.6.5
+
+    8060.28 fetches/sec, 96723.4 bytes/sec
+    msecs/connect: 0.0518643 mean, 0.702 max, 0.021 min
+    msecs/first-response: 12.3109 mean, 35.02 max, 4.762 min
+
+## node0.6.4
+
+    8111 fetches/sec, 97332 bytes/sec
+    msecs/connect: 0.051521 mean, 1.847 max, 0.021 min
+    msecs/first-response: 12.2351 mean, 49.227 max, 1.847 min
+
+
+## node0.6.3
+
+    8070 fetches/sec, 96840 bytes/sec
+    msecs/connect: 0.0517654 mean, 0.502 max, 0.02 min
+    msecs/first-response: 12.2967 mean, 51.886 max, 5.151 min
 
 ## node0.6.2
 
