@@ -9,6 +9,7 @@ I implement the **fibonacci function** in other **[Dynamic Languages](http://en.
 ### Dynamic
 
 * [nodejs](http://nodejs.org)
+* [nodejs + cpp module](http://kkaefer.github.com/node-cpp-modules)
 * [python](http://python.org)
 * [pypy](http://pypy.org/): a fast, compliant alternative implementation of the Python language (2.7.1). 
 * [perl](http://perl.org) 
@@ -32,15 +33,16 @@ If you want to help add more dynamic languagues, please leave the **implement co
   <tr><th>Language</th><th>Times</th><th>Position</th></tr>
   <tr><td style="color: green;">c</td><td>0m1.606s</td><td>#0</td></tr>
   <tr><td style="color: green;">go</td><td>0m1.769s</td><td>#1</td></tr>
-  <tr><td style="color: green;">luajit</td><td>0m2.583s</td><td>#2</td></tr>
-  <tr><td style="color: green;">nodejs</td><td>0m5.124s</td><td>#3</td></tr>
-  <tr><td style="color: green;">pypy</td><td>0m7.562s</td><td>#4</td></tr>
-  <tr><td>lua</td><td>0m34.492s</td><td>#5</td></tr>
-  <tr><td>python</td><td>1m11.647s</td><td>#6</td></tr>
-  <tr><td>php</td><td>1m28.198s</td><td>#7</td></tr>
-  <tr><td>perl</td><td>2m34.658s</td><td>#8</td></tr>
-  <tr><td style="color: red;">ruby 1.9.3</td><td>4m40.790s</td><td>#9</td></tr>
-  <tr><td style="color: red;">ruby 1.8.5</td><td>4m41.942s</td><td>#10</td></tr>
+  <tr><td style="color: green;">node + cpp module</td><td>0m2.216s</td><td>#2</td></tr>
+  <tr><td style="color: green;">luajit</td><td>0m2.583s</td><td>#3</td></tr>
+  <tr><td style="color: green;">nodejs</td><td>0m5.124s</td><td>#4</td></tr>
+  <tr><td style="color: green;">pypy</td><td>0m7.562s</td><td>#5</td></tr>
+  <tr><td>lua</td><td>0m34.492s</td><td>#6</td></tr>
+  <tr><td>python</td><td>1m11.647s</td><td>#7</td></tr>
+  <tr><td>php</td><td>1m28.198s</td><td>#8</td></tr>
+  <tr><td>perl</td><td>2m34.658s</td><td>#9</td></tr>
+  <tr><td style="color: red;">ruby 1.9.3</td><td>4m40.790s</td><td>#10</td></tr>
+  <tr><td style="color: red;">ruby 1.8.5</td><td>4m41.942s</td><td>#11</td></tr>
 </table>
 
 **lua** use *local function* will get better performance.
@@ -66,6 +68,78 @@ run
     real  0m5.153s
     user  0m5.124s
     sys 0m0.012s
+
+### nodejs + cpp module
+    
+cppfibonacci.cpp
+
+    #include <node/v8.h>
+    #include <node/node.h>
+
+    using namespace v8;
+
+    int fibonacci(int n) {
+      if (n < 2) {
+        return 1;
+      }
+      return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+
+    Handle<Value> Fibonacci(const Arguments& args) {
+        HandleScope scope;
+
+        if (args.Length() < 1) {
+            return ThrowException(Exception::TypeError(
+                String::New("First argument must be a number")));
+        }
+        Local<Integer> integer = args[0]->ToInteger();
+        int r = fibonacci(integer->Value());
+
+        return scope.Close(Integer::New(r));
+    }
+
+    void RegisterModule(v8::Handle<v8::Object> target) {
+        // Add properties to target
+        NODE_SET_METHOD(target, "fibonacci", Fibonacci);
+    }
+
+    // Register the module with node.
+    NODE_MODULE(cppfibonacci, RegisterModule);
+
+wscript
+
+    #!/usr/bin/env python
+
+    def set_options(ctx):
+      ctx.tool_options('compiler_cxx')
+
+    def configure(ctx):
+      ctx.check_tool('compiler_cxx')
+      ctx.check_tool('node_addon')
+
+    def build(ctx):
+      t = ctx.new_task_gen('cxx', 'shlib', 'node_addon')
+
+      t.source = ['cppfibonacci.cpp']
+
+      # Must be same as first parameter in NODE_MODULE.
+      t.target = 'cppfibonacci'
+
+cppfibonacci.js
+
+    var fibonacci = require('./build/default/cppfibonacci').fibonacci;
+    console.log(fibonacci(40));
+
+run
+
+    $ node-waf configure
+    $ node-waf build
+    $ time node cppfibonacci.js
+    165580141
+
+    real  0m2.224s
+    user  0m2.216s
+    sys 0m0.008s
 
 ### python2.4.3 && python2.6.7 && pypy1.7
 
@@ -259,6 +333,41 @@ Compilation with optimization:
 
     real  0m1.607s
     user  0m1.606s
+    sys 0m0.001s
+
+[@fool](http://cnodejs.org/blog/?p=4982#comment-1875): How about C++ meta programming, it’s a bit of cheating
+
+    #include <stdio.h>
+     
+    template<int n>
+    struct fibonacci {
+        enum { Result = fibonacci<n-2>::Result + fibonacci<n-1>::Result };
+    };
+     
+    template<>
+    struct fibonacci<1> {
+        enum { Result = 1 };
+    };
+     
+    template<>
+    struct fibonacci<0> {
+        enum { Result = 1 };
+    };
+     
+    int main(int argc, char *argv[])
+    {
+        printf("%d\n", fibonacci<40>::Result);
+        return 0;
+    }
+
+run
+
+    $ g++ fibonacci.template.cpp 
+    $ time ./a.out
+    165580141
+
+    real  0m0.002s
+    user  0m0.001s
     sys 0m0.001s
 
 ### go

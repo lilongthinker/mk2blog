@@ -1,5 +1,6 @@
 # Javascript
 
+* [A Case Against Using CoffeeScript](http://ryanflorence.com/2011/2012/case-against-coffeescript/)
 * [Working with Binary Data using Typed Arrays](http://blogs.msdn.com/b/ie/archive/2011/12/01/working-with-binary-data-using-typed-arrays.aspx)
 * [Native Fullscreen JavaScript API (plus jQuery plugin)](http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugin/)
 * [PhantomJS](http://www.phantomjs.org/): PhantomJS is a headless WebKit with JavaScript API. It has fast and native support for various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.

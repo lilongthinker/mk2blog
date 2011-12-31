@@ -2,6 +2,14 @@
 
 ## Articles
 
+* [npm cheatsheet](http://blog.nodejitsu.com/npm-cheatsheet)
+* [A String is not an Error](http://www.devthought.com/2011/12/22/a-string-is-not-an-error/)
+* [Graceful restart without downtime with node.js](http://codegremlins.com/28/Graceful-restart-without-downtime)
+* [package.json cheatsheet](http://package.json.nodejitsu.com/)
+* [JavaScript: One language to rule them all](http://venturebeat.com/2011/07/29/javascript-one-language-to-rule-them-all/)
+* [exec与spawn方法的区别与陷阱](http://dead-horse.github.com/2011/12/18/nodejs%E4%B8%ADchild_process%E6%A8%A1%E5%9D%97%E7%9A%84exec%E6%96%B9%E6%B3%95%E5%92%8Cspawn%E6%96%B9%E6%B3%95.html)
+* [the node.js aesthetic](http://substack.net/posts/b96642/the-node-js-aesthetic)
+* [The Switch: Python to Node.js](http://journal.paul.querna.org/articles/2011/12/18/the-switch-python-to-node-js/) [Language Shootout](https://docs.google.com/spreadsheet/ccc?key=0AvBGESHWxhk2dHJ2Q0lWRFF3dkxLZmFiMVVGRElQaEE#gid=0)
 * [Intro to Node.JS for .NET Developers](http://www.aaronstannard.com/post/2011/12/14/Intro-to-NodeJS-for-NET-Developers.aspx)
 * [Rise of Node for node beginner](http://www.slideshare.net/goddy128/rise-of-node)
 * [nodejs-best-practices](http://www.slideshare.net/the_undefined/nodejs-best-practices-10428790)
@@ -26,5 +34,7 @@
 
 ## Modules
 
+* [Mocha - A great test framework for Node.js](http://www.bryandonovan.com/blog/2011/12/05/mocha-a-great-test-framework-for-nodejs/)
+* [node.js extensions with C++ and V8](http://kkaefer.github.com/node-cpp-modules/)
 * [nodegit](http://nodegit.github.com/)
 * [forever-webui](https://github.com/FGRibreau/forever-webui) A simple web UI for efficient nodejs administration
