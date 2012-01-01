@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <title>Hash algorithm collision in Nodejs</title>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Key count');
+        data.addColumn('number', 'Safe (ms)');
+        data.addColumn('number', 'Attack (ms)');
+        data.addRows([
+["100", 1, 1],
+["1100", 12, 75],
+["2100", 24, 192],
+["3100", 34, 169],
+["4100", 39, 233],
+["5100", 49, 344],
+["6100", 76, 540],
+["7100", 260, 768],
+["8100", 100, 1025],
+["9100", 136, 1494],
+["10100", 181, 2181],
+["11100", 160, 2756],
+["12100", 459, 3221],
+["13100", 290, 4045],
+["14100", 530, 5531],
+["15100", 226, 4610],
+["16100", 419, 6092],
+["17100", 265, 7244],
+["18100", 261, 8275],
+["19100", 411, 9592],
+["20100", 263, 8090],
+["21100", 564, 9180],
+["22100", 310, 14372],
+["23100", 598, 18237],
+["24100", 513, 18666],
+["25100", 367, 21702],
+["26100", 840, 25552],
+["27100", 382, 27032],
+["28100", 388, 26283],
+["29100", 390, 28581],
+["30100", 406, 30552],
+["31100", 447, 39055]
+        ]);
+
+        var options = {
+          width: 800, height: 600,
+          title: 'Hash algorithm collision in Nodejs'
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+    <p>About the "hash algorithm collision", please see <a href="http://www.ocert.org/advisories/ocert-2011-003.html">#2011-003 multiple implementations denial-of-service via hash algorithm collision</a></p>
+  </body>
+</html>
