@@ -22,7 +22,10 @@
 
 ## 在Nodejs防御此问题
 
-虽然在目前为止还没看到对Nodejs造成攻击的具体方法，但是还是以防范于未然为原则，需要对此问题做好充分的防御措施。
+<strike>虽然在目前为止还没看到对Nodejs造成攻击的具体方法，但是还是以防范于未然为原则，需要对此问题做好充分的防御措施。</strike>
+
+**Nodejs 的攻击方法已经出现**，具体测试结果可以查看 [Hash algorithm collision in Nodejs](http://fengmk2.github.com/mk2blog/blog/2011/hac-in-nodejs-results.html)
+![hac-results](http://ww1.sinaimg.cn/large/6cfc7910jw1doryp1riixj.jpg)
 
 由于我个人一直使用的是 [connect](https://github.com/senchalabs/connect) ，所以我以 connect 为示例说明吧 ^_^
 
@@ -40,7 +43,7 @@ connect()
   .use(handleRequest)
 ```
 
-### 修改 [qs]() 模块，让其支持 keys-limit 和 allow-keys
+### 修改 [qs](https://github.com/visionmedia/node-querystring) 模块，让其支持 keys-limit 和 allow-keys
 
 [querystring.js](https://github.com/fengmk2/node-querystring/blob/master/lib/querystring.js#L106)
 
@@ -61,7 +64,7 @@ function parseString(str, options) {
     }
   }
   return String(str)
-    .split('&')
+    .split('&', limit)
     .reduce(function(ret, pair){
       try{
         pair = decodeURIComponent(pair.replace(/\+/g, ' '));
@@ -146,6 +149,28 @@ connect()
   .use(connect.query(qsOptions))
   .use(connect.bodyParser(qsOptions))
   .use(handleRequest)
+```
+
+## 防范 http header 攻击
+
+请求的 `http header` 也会导致hash冲突，在`V8`层面未修复hash算法之前，可以通过简单的 `http_patch.js` 修复此问题:
+
+```
+var http = require('http');
+
+var IncomingMessage = http.IncomingMessage;
+var _addHeaderLine = IncomingMessage.prototype._addHeaderLine;
+
+// limit http header number
+IncomingMessage.prototype._addHeaderLine = function(field, val) {
+  if (!this.__headerCount__) {
+    this.__headerCount__ = 0;
+  } else if (this.__headerCount__ >= 100) {
+    return;
+  }
+  _addHeaderLine.apply(this, arguments);
+  this.__headerCount__++;
+};
 ```
 
 ## 最后
