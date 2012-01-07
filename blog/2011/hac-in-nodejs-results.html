@@ -5,6 +5,7 @@
     <script type="text/javascript">
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
+      google.setOnLoadCallback(drawChart2);
       function drawChart() {
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Key count');
@@ -49,15 +50,68 @@
 
         var options = {
           width: 800, height: 600,
-          title: 'Hash algorithm collision in Nodejs'
+          title: 'Hash algorithm collision in Node <= V0.6.6'
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
         chart.draw(data, options);
       }
+
+      function drawChart2() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Key count');
+        data.addColumn('number', 'Safe (ms)');
+        data.addColumn('number', 'Number Attack (ms)');
+        data.addColumn('number', 'String Attack (ms)');
+        data.addRows([
+["100", 1, 2, 1],
+["1000", 10, 19, 11],
+["2000", 22, 67, 19],
+["3000", 27, 129, 27],
+["4000", 41, 222, 39],
+["5000", 44, 330, 50],
+["6000", 55, 509, 52],
+["7000", 62, 669, 62],
+["8000", 70, 852, 78],
+["9000", 92, 1072, 96],
+["10000", 121, 1632, 114],
+["11000", 131, 2062, 133],
+["12000", 147, 2433, 141],
+["13000", 161, 2846, 159],
+["14000", 167, 3742, 171],
+["15000", 279, 5479, 370],
+["16000", 209, 4332, 185],
+["17000", 205, 4995, 192],
+["18000", 210, 6017, 203],
+["19000", 236, 7535, 307],
+["20000", 238, 7398, 258],
+["21000", 245, 7536, 369],
+["22000", 277, 12901, 262],
+["23000", 347, 14485, 340],
+["24000", 528, 16156, 371],
+["25000", 310, 18463, 305],
+["26000", 319, 19530, 302],
+["27000", 360, 21906, 335],
+["28000", 352, 24275, 352],
+["29000", 550, 27361, 446],
+["30000", 633, 26793, 347],
+["31000", 459, 27355, 365],
+["32000", 393, 31099, 408]
+        ]);
+
+        var options = {
+          width: 800, height: 600,
+          title: 'Hash algorithm collision in Node V0.6.7'
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div2'));
+        chart.draw(data, options);
+      }
     </script>
   </head>
   <body>
+    <div id="chart_div2"></div>
+    <hr />
     <div id="chart_div"></div>
     <p>About the "hash algorithm collision", please see <a href="http://www.ocert.org/advisories/ocert-2011-003.html">#2011-003 multiple implementations denial-of-service via hash algorithm collision</a></p>
   </body>
