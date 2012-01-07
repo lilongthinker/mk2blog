@@ -8,6 +8,8 @@
 
 * [PHP数组的Hash冲突实例 ](http://www.laruence.com/2011/12/30/2435.html), [Supercolliding a PHP array](http://nikic.github.com/2011/12/28/Supercolliding-a-PHP-array.html)
 * [关于最近PHP的Array爆出的冲突问题](http://www.xingdonghai.cn/a-new-supercolliding-with-array-of-php)
+* [Hash Collision DoS 问题](http://coolshell.cn/articles/6424.html)
+* [Application vulnerability due to Non Random Hash Functions](http://stackoverflow.com/questions/8669946/application-vulnerability-due-to-non-random-hash-functions)
 
 ## 解决办法
 
