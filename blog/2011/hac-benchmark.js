@@ -16,7 +16,7 @@ var safeResut = [];
 for (var i = 100, l = keys.length; i < l; i += 1000) {
   keysCounts.push(i);
 
-  // inter keys
+  // number keys
   var s = keys.slice(0, i).join('&');
   var start = new Date();
   parse(s);
@@ -31,7 +31,6 @@ for (var i = 100, l = keys.length; i < l; i += 1000) {
   attackStringResut.push(attackStringMS)
   
   // safe 
-
   s = safe_keys.slice(0, i).join('&');
   start = new Date();
   parse(s);
