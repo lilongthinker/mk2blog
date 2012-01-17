@@ -2,6 +2,12 @@
 
 ## Articles
 
+* [How To Write A Readme](http://blog.nodejitsu.com/how-to-write-a-readme)
+* [Travis CI At Nodejitsu](http://blog.nodejitsu.com/travis-ci-at-nodejitsu)
+* [JavaScript is Not Web Assembly](http://blog.izs.me/post/10213512387/javascript-is-not-web-assembly)
+* [Programming Styles in the Node Community](http://dailyjs.com/2012/01/12/style/)
+* [Streaming UTF-8 (with node.js)](http://debuggable.com/posts/streaming-utf-8-with-node-js:4bf28e8b-a290-432f-a222-11c1cbdd56cb)
+* [Pool implementation for redis/nodejs](http://www.tokumine.com/2011/06/12/364/)
 * [npm cheatsheet](http://blog.nodejitsu.com/npm-cheatsheet)
 * [A String is not an Error](http://www.devthought.com/2011/12/22/a-string-is-not-an-error/)
 * [Graceful restart without downtime with node.js](http://codegremlins.com/28/Graceful-restart-without-downtime)
